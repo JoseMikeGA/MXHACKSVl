@@ -15,7 +15,7 @@ recognize_text_url = endpoint + "vision/v2.0/recognizeText"
 def main():
     # Start video capture
 
-    capture = cv2.VideoCapture(1)
+    capture = cv2.VideoCapture(2)
     # Stores the time for make an interval on the reading of image
     last_time = 0
     while True:
