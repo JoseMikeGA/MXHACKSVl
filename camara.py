@@ -1,6 +1,6 @@
 import cv2
 import requests
-from time import sleep
+from time import sleep,time
 from io import BytesIO
 import threading
 
@@ -14,23 +14,26 @@ recognize_text_url = endpoint + "vision/v2.0/recognizeText"
 
 def main():
     # Start video capture
+
     capture = cv2.VideoCapture(1)
-    val, frame = capture.read()
-    val, frame = capture.read()
-    val, frame = capture.read()
+    # Stores the time for make an interval on the reading of image
+    last_time = 0
     while True:
         # Capturar un frame
         val, frame = capture.read()
-        
         # Encoding image to jpg format 
         img_str = cv2.imencode('.jpg', frame)[1].tostring()
         cv2.imshow('Imagen', frame)
-        #result = detectObjectsFromImage(img_str)
-        threading.Thread(target=detectTextFromImage, args=(img_str,)).start()
-        sleep(0.5)
-        #result = detectTextFromImage(img_str)
-        print(result)
-
+        
+        # Obtain the actual time
+        millis = int(round(time() * 1000))
+        if (last_time + 2000) < millis:
+            #result = detectObjectsFromImage(img_str)
+            threading.Thread(target=detectTextFromImage, args=(img_str,)).start()
+            threading.Thread(target=detectObjectsFromImage, args=(img_str,)).start()
+            # Obtain new time for last_time
+            last_time = int(round(time() * 1000))
+            print(last_time)
         #Salir con 'ESC'
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
@@ -40,12 +43,22 @@ def main():
 def detectObjectsFromImage(image):
     # Features obteined from image
     params = {'visualFeatures': 'Objects'}
-    return requestToAzureComputerVision(analyze_url, params, image)
+    print( requestToAzureComputerVision(analyze_url, params, image).json())
 
 def detectTextFromImage(image):
     # Kind of text, can be Printed and Handwrited
     params = {'mode': 'Printed'}
-    return requestToAzureComputerVision(recognize_text_url, params, image)
+    response = requestToAzureComputerVision(recognize_text_url, params, image)
+    # Get Header response
+    search_url = response.headers.get("Operation-Location")
+    sleep(0.5)
+    response = requests.get(search_url , headers={
+        'Ocp-Apim-Subscription-Key': subscription_key,
+        'Content-Type': 'application/json'
+    })
+    analysis = response.json()
+    print(analysis)
+    #return requestToAzureComputerVision(recognize_text_url, params, image)
 
 def requestToAzureComputerVision(url, params, image):
     # Headers for azure request
@@ -55,15 +68,7 @@ def requestToAzureComputerVision(url, params, image):
     response = requests.post(
         url, headers=headers, params=params, data=image)
     response.raise_for_status()
-    # Get Header response
-    search_url = response.headers.get("Operation-Location")
-    response = requests.get(search_url , headers={
-        'Ocp-Apim-Subscription-Key': subscription_key,
-        'Content-Type': 'application/json'
-    })
-    analysis = response.json()
-    sleep(0.5)
-    return analysis
+    return response
 
 if __name__ == '__main__':
     main()
