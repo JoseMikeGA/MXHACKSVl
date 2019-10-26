@@ -1,7 +1,6 @@
 import requests
 # If you are using a Jupyter notebook, uncomment the following line.
 # %matplotlib inline
-import matplotlib.pyplot as plt
 from io import BytesIO
 
 # Add your Computer Vision subscription key and endpoint to your environment variables.
@@ -14,21 +13,22 @@ analyze_url = endpoint + "vision/v2.1/analyze"
 recognize_text_url = endpoint + "vision/v2.0/recognizeText"
 
 # Set image_path to the local path of an image that you want to analyze.
-image_path ="C:\\Users\\Miguel Gomez\\Pictures\\logo.jpg"
+image_path ="/home/jacob/Documents/hackatones/AngelHack/1.jpg"
 
 # Read the image into a byte array
 image_data = open(image_path, "rb").read()
+print(image_data)
 headers = {'Ocp-Apim-Subscription-Key': subscription_key,
            'Content-Type': 'application/octet-stream'}
 
 #           'Content-Type': 'application/octet-stream'}
-#           params = {'visualFeatures': 'Categories,Description,Color,Objects'}
+params = {'visualFeatures': 'Categories,Description,Color,Objects'}
 
 # params = {'visualFeatures': 'Text'}
-params = {'mode': 'Printed'}
+#params = {'mode': 'Printed'}
 
 response = requests.post(
-    recognize_text_url, headers=headers, params=params, data=image_data)
+    analyze_url, headers=headers, params=params, data=image_data)
 response.raise_for_status()
 
 # The 'analysis' object contains various fields that describe the image. The most
