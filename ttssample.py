@@ -84,21 +84,6 @@ class TextToSpeech(object):
                   "\nSomething went wrong. Check your subscription key and headers.\n")
             print("Reason: " + str(response.reason) + "\n")
 
-    def get_voices_list(self):
-        base_url = 'https://centralus.tts.speech.microsoft.com/'
-        path = 'cognitiveservices/voices/list'
-        constructed_url = base_url + path
-        headers = {
-            'Authorization': 'Bearer ' + self.access_token,
-        }
-        response = requests.get(constructed_url, headers=headers)
-        if response.status_code == 200:
-            print("\nAvailable voices: \n" + response.text)
-        else:
-            print("\nStatus code: " + str(response.status_code) +
-                  "\nSomething went wrong. Check your subscription key and headers.\n")
-
-
 if __name__ == "__main__":
     app = TextToSpeech(subscription_key)
     app.get_token()
