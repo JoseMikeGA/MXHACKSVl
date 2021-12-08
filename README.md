@@ -1,4 +1,3 @@
 # "Wonder Vision" 
 
-
-Wonder Vision es un dispositivo con el cual mediante una cámara podemos reconocer objetos e indicarle al usuario el nombre de este, a su vez, la cámara reconoce textos y los lee para el usuario, también a través de sensores detecta la cercanía de los objetos y emite un sonido que aumenta el numero de repeticiones de acuerdo a la cercanía con el objeto.
+Wonder Visión es un dispositivo con el cual mediante una cámara reconoce textos y los lee para el usuario, esto enfocado para ayudar a las personas con discapacidad visual a tener acceso a mas información.
